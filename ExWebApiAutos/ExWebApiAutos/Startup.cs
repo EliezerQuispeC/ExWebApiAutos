@@ -10,6 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.EntityFrameworkCore;
+using ExWebApiAutos.Model;
+using ExWebApiAutos.Model.AutosDb;
+using Microsoft.AspNetCore.Identity;
 
 namespace ExWebApiAutos
 {
@@ -25,6 +29,18 @@ namespace ExWebApiAutos
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AutosDbContext>(options =>
+            options.UseSqlServer(
+            Configuration["Data:Autos:ConnectionString"]));
+
+            services.AddDbContext<AppIdentityDbContext>(options =>
+                options.UseSqlServer(
+                Configuration["Data:AutosIdentity:ConnectionString"]));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppIdentityDbContext>()
+                .AddDefaultTokenProviders();
+
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "ExWebApiAutos", Version = "v1" });
             });
@@ -45,7 +61,9 @@ namespace ExWebApiAutos
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
+            app.UseAuthentication();
             app.UseMvc();
+            IdentitySeedData.EnsurePopulated(app);
         }
     }
 }
