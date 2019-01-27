@@ -8,7 +8,7 @@ namespace ExWebApiAutos.Model.AutosDb
     public partial class Autos
     {
         [Column("id")]
-        public int Id { get; set; }
+        public Guid AutoId { get; set; }
         [Required]
         [Column("color")]
         [StringLength(20)]

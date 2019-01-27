@@ -30,7 +30,7 @@ namespace ExWebApiAutos.Model.AutosDb
         {
             modelBuilder.Entity<Autos>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.AutoId).ValueGeneratedNever();
 
                 entity.Property(e => e.AnioFab).IsUnicode(false);
 
