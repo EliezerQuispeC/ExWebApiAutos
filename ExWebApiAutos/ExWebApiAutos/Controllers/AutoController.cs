@@ -23,35 +23,41 @@ namespace ExWebApiAutos.Controllers
         [HttpGet]
         public IQueryable<Autos> Get()
         {
-            return repositorio.Autos;
+            return repositorio.Items;
         }
         // GET api/<controller>/5
         [HttpGet("{AutoId}")]
         public Autos Get(Guid AutoId)
         {
-            return repositorio.Autos.Where(p => p.AutoId == AutoId).FirstOrDefault();
+            return repositorio.Items.Where(p => p.Id == AutoId).FirstOrDefault();
         }
         // POST api/<controller>
         [HttpPost]
         public IActionResult Post([FromBody]Autos auto)
         {
-            repositorio.SaveProject(auto);
+            repositorio.Save(auto);
             return Ok(true);
         }
         // PUT api/<controller>/5
         [HttpPut("{AutoId}")]
         public IActionResult Put(Guid AutoId, [FromBody]Autos auto)
         {
-            auto.AutoId = AutoId;
-            repositorio.SaveProject(auto);
+            auto.Id = AutoId;
+            repositorio.Save(auto);
             return Ok(true);
         }
         // DELETE api/<controller>/5
         [HttpDelete("{AutoId}")]
         public IActionResult Delete(Guid AutoId)
         {
-            repositorio.DeleteAuto(AutoId);
+            repositorio.Delete(AutoId);
             return Ok(true);
+        }
+
+        [HttpGet("{pageSize}/{page}")]
+        public IQueryable<Autos> Get(int pageSize, int page)
+        {
+            return repositorio.FilterAutos(pageSize, page);
         }
     }
 }

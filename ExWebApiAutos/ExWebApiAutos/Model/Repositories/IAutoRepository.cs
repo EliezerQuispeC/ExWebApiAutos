@@ -6,10 +6,8 @@ using ExWebApiAutos.Model.AutosDb;
 
 namespace ExWebApiAutos.Model.Repositories
 {
-    public interface IAutoRepository
+    public interface IAutoRepository : IRepository<Autos>
     {
-        IQueryable<Autos> Autos { get; }
-        void SaveProject(Autos auto);
-        Autos DeleteAuto(Guid AutoID);
+        IQueryable<Autos> FilterAutos(int pageSize, int page);
     }
 }

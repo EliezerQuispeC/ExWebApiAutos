@@ -6,23 +6,23 @@ namespace ExWebApiAutos.Model.Repositories
 {
     public class EFAutoRepository : IAutoRepository
     {
-        public IQueryable<Autos> Autos => context.Autos;
+        public IQueryable<Autos> Items => context.Autos;
         private AutosDbContext context;
         public EFAutoRepository(AutosDbContext ctx)
         {
             context = ctx;
         }
-        public void SaveProject(Autos auto)
+        public void Save(Autos auto)
         {
-            if (auto.AutoId == Guid.Empty)
+            if (auto.Id == Guid.Empty)
             {
-                auto.AutoId = Guid.NewGuid();
+                auto.Id = Guid.NewGuid();
                 context.Autos.Add(auto);
             }
             else
             {
                 Autos dbEntry = context.Autos
-                .FirstOrDefault(p => p.AutoId == auto.AutoId);
+                .FirstOrDefault(p => p.Id == auto.Id);
                 if (dbEntry != null)
                 {
                     dbEntry.Color = auto.Color;
@@ -36,10 +36,10 @@ namespace ExWebApiAutos.Model.Repositories
             }
             context.SaveChangesAsync();
         }
-        public void DeleteAuto(Guid AutoID)
+        public void Delete(Guid AutoID)
         {
             Autos dbEntry = context.Autos
-                .FirstOrDefault(p => p.AutoId == AutoID);
+                .FirstOrDefault(p => p.Id == AutoID);
             if(dbEntry != null)
             {
                 context.Autos.Remove(dbEntry);
@@ -47,9 +47,11 @@ namespace ExWebApiAutos.Model.Repositories
             }
         }
 
-        Autos IAutoRepository.DeleteAuto(Guid AutoID)
+        public IQueryable<Autos> FilterAutos(int pageSize, int page)
         {
-            throw new NotImplementedException();
+            return this.Items
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
         }
     }
 }
